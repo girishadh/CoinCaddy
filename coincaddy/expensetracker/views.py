@@ -2,8 +2,27 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 
+from .models import Income, Expense
+
 def index(request):
     return render(request, 'index.html')
+
+def incomeView(request):
+
+    records = Income.objects.all()
+
+    context = {
+        'records':records
+    }
+
+    if request.method == "POST":
+        name = request.POST['name']
+        amount = request.POST['amount']
+
+        income = Income.objects.create(name=name, amount=amount, user=request.user)
+        income.save()
+
+    return render(request, 'incomeView.html', context)
 
 def user_login(request):
     if request.method == 'POST':
